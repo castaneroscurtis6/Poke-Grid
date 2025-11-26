@@ -1,0 +1,11 @@
+# No external dependencies required for basic version
+# All modules used are from Python standard library:
+# - json
+# - random
+# - sqlite3
+# - datetime
+# - typing
+
+# Optional: For future web version
+# flask>=2.0.0
+# requests>=2.25.0  # For PokeAPI integration
