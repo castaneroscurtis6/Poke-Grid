@@ -1,11 +1,12 @@
-# No external dependencies required for basic version
-# All modules used are from Python standard library:
+# Flask Web Version Requirements
+flask>=2.0.0
+
+# All other modules are from Python standard library:
 # - json
 # - random
-# - sqlite3
 # - datetime
 # - typing
+# - secrets
 
-# Optional: For future web version
-# flask>=2.0.0
+# Optional: For future enhancements
 # requests>=2.25.0  # For PokeAPI integration

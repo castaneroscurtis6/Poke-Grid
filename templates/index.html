@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Grid Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+            font-size: 1.3em;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 150px repeat(3, 1fr);
+            grid-template-rows: 80px repeat(3, 150px);
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .corner {
+            background: transparent;
+        }
+
+        .col-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .row-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .cell {
+            background: #f8f9fa;
+            border: 3px solid #dee2e6;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 10px;
+        }
+
+        .cell:hover:not(.filled) {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .cell.filled {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-color: #667eea;
+            cursor: default;
+        }
+
+        .cell-content {
+            text-align: center;
+        }
+
+        .pokemon-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .pokemon-score {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .empty-cell {
+            color: #adb5bd;
+            font-size: 2em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 100px repeat(3, 1fr);
+                grid-template-rows: 60px repeat(3, 120px);
+                gap: 5px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .col-header, .row-header {
+                font-size: 0.7em;
+                padding: 5px;
+            }
+
+            .pokemon-name {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Pokemon Grid Game</h1>
+        <p class="subtitle">Find Pokemon that match both the row and column categories!<br>Lower score = rarer picks = better!</p>
+
+        <div class="score-display">
+            <span id="score-text">Score: 0 points | Cells: 0/9</span>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <div id="grid" class="grid-container">
+            <!-- Grid will be generated by JavaScript -->
+        </div>
+
+        <div class="controls">
+            <button class="btn-reset" onclick="resetGame()">🔄 New Game</button>
+        </div>
+    </div>
+
+    <!-- Modal for Pokemon input -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Enter Pokemon</h2>
+            <p id="modal-categories"></p>
+            <input type="text" id="pokemon-input" placeholder="Pokemon name..." autocomplete="off">
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="submitPokemon()">Submit</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRow = null;
+        let currentCol = null;
+        let gridData = null;
+
+        // Load grid data on page load
+        async function loadGrid() {
+            const response = await fetch('/api/grid');
+            gridData = await response.json();
+            renderGrid();
+            updateScore();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+
+            // Corner cell
+            const corner = document.createElement('div');
+            corner.className = 'corner';
+            grid.appendChild(corner);
+
+            // Column headers
+            for (let i = 0; i < 3; i++) {
+                const colHeader = document.createElement('div');
+                colHeader.className = 'col-header';
+                colHeader.textContent = gridData.col_categories[i];
+                grid.appendChild(colHeader);
+            }
+
+            // Rows
+            for (let row = 0; row < 3; row++) {
+                // Row header
+                const rowHeader = document.createElement('div');
+                rowHeader.className = 'row-header';
+                rowHeader.textContent = gridData.row_categories[row];
+                grid.appendChild(rowHeader);
+
+                // Cells
+                for (let col = 0; col < 3; col++) {
+                    const cell = document.createElement('div');
+                    const cellKey = `${row},${col}`;
+                    const pokemon = gridData.user_picks[cellKey];
+
+                    if (pokemon) {
+                        cell.className = 'cell filled';
+                        cell.innerHTML = `
+                            <div class="cell-content">
+                                <div class="pokemon-name">${pokemon}</div>
+                                <div class="pokemon-score">Score calculating...</div>
+                            </div>
+                        `;
+                        // Fetch score for this Pokemon
+                        fetchPokemonScore(cell, pokemon);
+                    } else {
+                        cell.className = 'cell';
+                        cell.innerHTML = '<div class="empty-cell">?</div>';
+                        cell.onclick = () => openModal(row, col);
+                    }
+
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        async function fetchPokemonScore(cellElement, pokemon) {
+            // For now, we'll show a placeholder. In a full implementation,
+            // you'd fetch the actual score from the backend
+            const scoreDiv = cellElement.querySelector('.pokemon-score');
+            scoreDiv.textContent = 'Click for score';
+        }
+
+        function openModal(row, col) {
+            currentRow = row;
+            currentCol = col;
+            
+            const modal = document.getElementById('modal');
+            const categoriesText = document.getElementById('modal-categories');
+            const input = document.getElementById('pokemon-input');
+            
+            categoriesText.textContent = `${gridData.row_categories[row]} + ${gridData.col_categories[col]}`;
+            input.value = '';
+            modal.classList.add('active');
+            input.focus();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            currentRow = null;
+            currentCol = null;
+        }
+
+        async function submitPokemon() {
+            const pokemon = document.getElementById('pokemon-input').value.trim();
+            
+            if (!pokemon) {
+                showMessage('Please enter a Pokemon name', 'error');
+                return;
+            }
+
+            const response = await fetch('/api/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    row: currentRow,
+                    col: currentCol,
+                    pokemon: pokemon
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showMessage(`✓ ${result.pokemon} is correct! (+${result.score} points)`, 'success');
+                closeModal();
+                await loadGrid();
+            } else {
+                showMessage(`✗ ${result.message}`, 'error');
+                if (result.valid_options && result.valid_options.length > 0) {
+                    showMessage(`Valid options: ${result.valid_options.join(', ')}`, 'error');
+                }
+            }
+        }
+
+        async function updateScore() {
+            const response = await fetch('/api/score');
+            const data = await response.json();
+            
+            document.getElementById('score-text').textContent = 
+                `Score: ${data.total_score} points | Cells: ${data.cells_filled}/9`;
+            
+            if (data.cells_filled === 9) {
+                setTimeout(() => {
+                    showMessage(`🎉 Grid Complete! Final Score: ${data.total_score} points (Lower is better!)`, 'success');
+                }, 500);
+            }
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type} active`;
+            
+            setTimeout(() => {
+                message.classList.remove('active');
+            }, 5000);
+        }
+
+        async function resetGame() {
+            if (confirm('Are you sure you want to start a new game?')) {
+                await fetch('/api/reset');
+                location.reload();
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('pokemon-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitPokemon();
+            }
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Load grid on page load
+        loadGrid();
+    </script>
+</body>
+</html>
