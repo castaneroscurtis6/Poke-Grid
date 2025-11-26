@@ -1,0 +1,12 @@
+# Flask Web Version Requirements
+flask>=2.0.0
+
+# All other modules are from Python standard library:
+# - json
+# - random
+# - datetime
+# - typing
+# - secrets
+
+# Optional: For future enhancements
+# requests>=2.25.0  # For PokeAPI integration

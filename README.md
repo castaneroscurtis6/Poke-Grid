@@ -1,0 +1,167 @@
+# Pokemon Grid Game - Flask Web Version 🎮
+
+A beautiful web-based 9-box grid game similar to Hoop Grid! Find Pokemon that match row and column categories. Lower score = rarer picks = better!
+
+## 🌟 Features
+
+- **Beautiful Web Interface** - Click cells to enter Pokemon
+- **Real-time Scoring** - See your score update as you play
+- **Daily Grids** - New random grid every day
+- **Responsive Design** - Works on desktop and mobile
+- **Rarity-based Scoring** - Lower score wins!
+
+## 🚀 Quick Start
+
+### 1. Install Flask
+
+```bash
+pip install flask
+```
+
+Or install from requirements:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Run the Game
+
+```bash
+python app.py
+```
+
+### 3. Open Your Browser
+
+Go to: `http://localhost:5000`
+
+That's it! Start playing! 🎉
+
+## 🎮 How to Play
+
+1. **Click any empty cell** in the 3x3 grid
+2. **Enter a Pokemon name** that matches BOTH:
+   - The row category (left side)
+   - The column category (top)
+3. **Click Submit** to check your answer
+4. **Fill all 9 cells** to complete the game
+5. **Lower score is better!** (Rarer picks = fewer points)
+
+## 📊 Scoring System
+
+- **1 point** - First pick ever (extremely rare!)
+- **5 points** - Picked < 10 times (very rare)
+- **25 points** - Picked 10-49 times (uncommon)
+- **50 points** - Picked 50-99 times (common)
+- **100 points** - Picked 100+ times (very common)
+
+**Goal**: Get the lowest score by finding the most obscure Pokemon!
+
+## 🗂️ Project Structure
+
+```
+pokemon-grid-game-flask/
+├── app.py                 # Flask backend
+├── templates/
+│   └── index.html        # Web interface
+├── requirements.txt      # Dependencies
+└── README.md            # This file
+```
+
+## 🎨 Features in Detail
+
+### Beautiful UI
+- Gradient backgrounds
+- Smooth animations
+- Responsive grid layout
+- Modal popup for Pokemon entry
+
+### Game Features
+- Session-based game state
+- Real-time validation
+- Score tracking
+- Reset game option
+
+### Categories Include
+- **Types**: Fire, Water, Dragon, Flying, Steel, Psychic, Electric, Ice
+- **Regions**: Kanto, Hoenn, Sinnoh
+- **Special**: Legendary, Generation 1/3, Fully Evolved
+
+## 🔧 Customization
+
+### Add More Pokemon
+
+Edit the `load_pokemon_data()` function in `app.py`:
+
+```python
+"NewPokemon": {
+    "types": ["Type1", "Type2"],
+    "generation": 1,
+    "evolution_stage": 1,
+    "legendary": False,
+    "region": "RegionName"
+}
+```
+
+### Change Categories
+
+Edit the `generate_daily_grid()` function in `app.py` to add new category types.
+
+### Modify Styling
+
+Edit the `<style>` section in `templates/index.html` to customize colors, fonts, and layout.
+
+## 🚀 Future Enhancements
+
+- [ ] User authentication and profiles
+- [ ] Global leaderboard with database
+- [ ] Daily challenge mode
+- [ ] Share results on social media
+- [ ] Pokemon sprites/images
+- [ ] Load all Pokemon from PokeAPI
+- [ ] Hint system
+- [ ] Timer mode
+
+## 💡 Tips for Players
+
+1. **Think dual-types** - Pokemon with two types match more combinations
+2. **Avoid obvious picks** - Popular Pokemon like Charizard = high score
+3. **Use the stats command** - Learn which cells are harder
+4. **Remember regions** - Some Pokemon only appear in certain regions
+
+## 🐛 Troubleshooting
+
+**Port already in use?**
+```bash
+# Change port in app.py (last line)
+app.run(debug=True, port=5001)  # Use different port
+```
+
+**Flask not found?**
+```bash
+pip install flask
+```
+
+**Game state not saving?**
+- Make sure you're using the same browser
+- Session data is temporary (clears when browser closes)
+
+## 📝 Notes
+
+- Game state is stored in Flask sessions (temporary)
+- For persistent data, upgrade to the database version
+- Daily grid changes each day based on date
+- All Pokemon data is currently hardcoded (can be expanded)
+
+## 🎯 Ready to Play?
+
+```bash
+python app.py
+```
+
+Then open: **http://localhost:5000**
+
+Have fun catching them all! ⚡
+
+---
+
+Made with 💜 for Pokemon fans
